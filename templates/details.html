@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>This is details page</h3>
+    <br>
+    Task status: {{ status }}
+    <br>
+    {% if is_successful %}
+        <img src="http://{{ image_name }}">
+    {% else %}
+        {% if is_ready %}
+            Error code: {{ error_code }}
+            Message: {{ message }}
+        {% endif %}
+    {% endif %}
+
+
+{% endblock %}
