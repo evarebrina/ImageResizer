@@ -21,6 +21,6 @@ urlpatterns = [
     path('', UI.views.resize, name='index'),
     path('resize/', UI.views.resize, name='resize'),
     path('details/<str:task_id>/', UI.views.details, name='details'),
-    path('api/resize/', api.views.rest_resize, name='rest_resize'),
-    path('api/details/<str:resize_id>/', api.views.rest_details, name='rest_details'),
+    path('api/resize/', api.views.resize, name='resize'),
+    path('api/details/<str:resize_id>/', api.views.details, name='details'),
 ]

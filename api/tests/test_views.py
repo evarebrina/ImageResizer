@@ -1,5 +1,5 @@
 from django.test import TestCase, RequestFactory
-from api.views import rest_resize
+from api.views import resize
 import json
 from api.tasks import handle_image
 from api import models
@@ -10,13 +10,13 @@ import logging
 logger = logging.getLogger('api.tests.test_view')
 
 
-class RestResize(TestCase):
+class Resize(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
     def test_good(self):
         request = self.factory.get('/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&height=100&width=100', HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         resize_id = json.loads(response.content)['details']
         extension = '.jpg'
         original_image = 'original_' + resize_id + extension
@@ -36,7 +36,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?height=100&width=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -48,7 +48,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -60,7 +60,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -72,7 +72,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100&height=ggg',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -84,7 +84,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=ggg&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -96,7 +96,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=10000&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -106,7 +106,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=0&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -118,7 +118,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100&height=10000',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -128,7 +128,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100&height=0',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -140,7 +140,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=invalidurl&width=100&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -152,7 +152,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=http://example.com/photo.jpg&width=100&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -164,7 +164,7 @@ class RestResize(TestCase):
         request = self.factory.get(
             '/?image_url=https://stackoverflow.com/questions/4283933/what-is-the-clean-way-to-unittest-filefield-in-django&width=100&height=100',
             HTTP_HOST='31.134.134.147:8000')
-        response = rest_resize(request)
+        response = resize(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {
             'status': 'error',
@@ -173,7 +173,7 @@ class RestResize(TestCase):
         })
 
 
-class RestDetails(TestCase):
+class Details(TestCase):
     def setUp(self):
         self.resize_id = str(uuid.uuid4())
         extension = '.jpg'
