@@ -4,6 +4,9 @@ import json
 from api.tasks import handle_image
 from api import models
 import uuid
+import os
+import logging
+logger = logging.getLogger('api.tests.test_view')
 
 
 class RestResize(TestCase):
@@ -13,7 +16,20 @@ class RestResize(TestCase):
     def test_good(self):
         request = self.factory.get('/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&height=100&width=100', HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
+        resize_id = json.loads(response.content)['details']
+        extension = '.jpg'
+        original_image = 'original_' + resize_id + extension
+        sized_image = 'sized_' + resize_id + extension
+        try:
+            os.remove('static/original_images/' + original_image)
+        except FileNotFoundError:
+            logger.warning('File ' + original_image + ' does not exist')
+        try:
+            os.remove('static/sized_images/' + sized_image)
+        except FileNotFoundError:
+            logger.warning('File ' + sized_image + ' does not exist')
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(json.loads(response.content)['status'], 'ok')
 
     def test_empty_url(self):
         request = self.factory.get(
