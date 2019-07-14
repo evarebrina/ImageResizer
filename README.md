@@ -62,3 +62,17 @@ Original and sized images are stored on the sever for at least 10 minutes from t
 of setting the task.
 
   Service contains user interface which uses the service API and runs on '/'
+  
+  ###Running the project
+  
+  You need python3 for this project. To run run the following commands:
+```
+virtualenv -p python3 ImageResizer
+cd ImageResizer
+. bin/activate
+git clone https://vadimrebrin/ImageResizer.git ImageResizer
+cd ImageResizer
+pip install -r requirements.txt
+python3 manage.py runserver
+```
+These will run Django server with the ImageResizer project
