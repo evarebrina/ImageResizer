@@ -4,6 +4,7 @@ import json
 from api.tasks import handle_image
 from api import models
 import uuid
+from PIL import Image
 import os
 import logging
 logger = logging.getLogger('api.tests.test_view')
@@ -177,13 +178,28 @@ class RestDetails(TestCase):
         self.resize_id = str(uuid.uuid4())
         extension = '.jpg'
         image_name = 'test_image' + extension
-        image_path = 'static/test_images/' + image_name
+        self.test_path = 'static/test_images3847/'
+        self.test_original_image_path = self.test_path + image_name
+        try:
+            os.mkdir(self.test_path)
+        except FileExistsError:
+            logger.warning(self.test_path + ' already exists')
+        img = Image.new('RGB', (400, 300), color=5)
+        img.save(self.test_original_image_path)
         model = models.Task.objects.create(uuid=self.resize_id, extension=extension)
         height = 100
         width = 100
-        self.task = handle_image.delay(self.resize_id, image_path, extension, height, width)
+        self.task = handle_image.delay(self.resize_id, self.test_original_image_path, extension, height, width)
+        self.test_sized_image_path = 'static/sized_images/' + 'sized_' + self.resize_id + extension
         model.task_id = self.task.id
         model.save()
+
+    def tearDown(self):
+        self.task.wait()
+        os.remove(self.test_original_image_path)
+        os.rmdir(self.test_path)
+        print('removing ' + self.test_sized_image_path)
+        os.remove(self.test_sized_image_path)
 
     def test_good(self):
         self.task.wait()
