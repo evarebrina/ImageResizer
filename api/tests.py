@@ -1,6 +1,9 @@
 from django.test import TestCase, RequestFactory
 from .views import rest_resize
 import json
+from api.tasks import handle_image
+from api import models
+import uuid
 
 
 class RestResize(TestCase):
@@ -8,7 +11,7 @@ class RestResize(TestCase):
         self.factory = RequestFactory()
 
     def test_good(self):
-        request = self.factory.get('/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&height=100&width=100', HTTP_HOST='31.134.134.147:8000')
+        request = self.factory.get('/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&height=100&width=100', HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 201)
 
@@ -150,4 +153,33 @@ class RestResize(TestCase):
             'status': 'error',
             'error_code': 'wrong_content_type',
             'message': 'wrong content type, must be image/jpeg or image/png, not text/html; charset=utf-8',
+        })
+
+
+class RestDetails(TestCase):
+    def setUp(self):
+        self.resize_id = str(uuid.uuid4())
+        extension = '.jpg'
+        image_name = 'test_image' + extension
+        image_path = 'static/test_images/' + image_name
+        model = models.Task.objects.create(uuid=self.resize_id, extension=extension)
+        height = 100
+        width = 100
+        self.task = handle_image.delay(self.resize_id, image_path, extension, height, width)
+        model.task_id = self.task.id
+        model.save()
+
+    def test_good(self):
+        self.task.wait()
+        response = self.client.get('/api/details/' + self.resize_id + '/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['status'], 'successful')
+
+    def test_task_not_exist(self):
+        response = self.client.get('/api/details/' + 'invalid_id' + '/')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(json.loads(response.content), {
+            'status': 'error',
+            'error_code': 'not_found',
+            'message': 'Task not found',
         })

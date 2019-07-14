@@ -20,17 +20,10 @@ def handle_image(resize_id, original_image_path, extension, h, w):
         logger.info('Processed image ' + image_name)
         image_path = 'static/sized_images/' + image_name
         sized_image.save(image_path, original_image.format)
-        # may raise models.Task.DoesNotExist!!!!!!!!!!!!
-        model = models.Task.objects.get(uuid=resize_id)
-        model.sized_image = image_name
-        model.save()
         logger.info('handler: finished')
     except IOError as ex:
         logger.exception(ex)
         raise Exception('File is not a valid image')
-    except models.Task.DoesNotExist as ex:
-        logger.exception(ex)
-        raise Exception('unexpected error: no entry in database')
     return 'succeed'
 
 
@@ -38,8 +31,8 @@ def handle_image(resize_id, original_image_path, extension, h, w):
 def clear_database():
     expired_models = models.Task.objects.filter(date__lt=datetime.datetime.now()-datetime.timedelta(minutes=10))
     for model in expired_models:
-        original_image = model.original_image
-        sized_image = model.sized_image
+        original_image = 'original_' + model.uuid + model.extension
+        sized_image = 'sized_' + model.uuid + model.extension
         try:
             os.remove('static/original_images/' + original_image)
         except FileNotFoundError as ex:

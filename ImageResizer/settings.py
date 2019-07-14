@@ -179,10 +179,12 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'clear_database': {
         'task': 'api.tasks.clear_database',
-        'schedule': 60.0,
+        'schedule': 60.0 * 10.0,
     },
     'clear_uploaded_images': {
         'task': 'UI.tasks.clear_uploaded_images',
-        'schedule': 60.0,
+        'schedule': 60.0 * 10.0,
     }
 }
+
+#TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'

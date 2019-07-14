@@ -65,14 +65,13 @@ image/png, not ' + image_request.headers['content-type'])
             f.write(chunk)
         f.close()
         logger.debug('Creating model image_path: %s width: %s height: %s' % (image_path, str(width), str(height)))
-        model = models.Task(uuid=resize_id, original_image=image_name)
-        model.save()
-        logger.debug('Model saved. Running Task...')
+        model = models.Task(uuid=resize_id, extension=extension)
+        logger.debug('Running Task...')
         task = handle_image.delay(resize_id, image_path, extension, height, width)
         logger.debug('Task %s ran' % str(task.id))
         model.task_id = task.id
-        logger.debug('Model updated task id')
         model.save()
+        logger.debug('Model saved')
 
     except exceptions.NoRequiredParameter as ex:
         return JsonResponse({
@@ -133,9 +132,11 @@ def rest_details(request, resize_id):
         response = {'status': 'pending'}
         logger.info(task_res.state)
         if task_res.successful():
+            image_name = 'sized_' + model.uuid + model.extension
+            image_path = '/static/sized_images/' + image_name
             response = {
                 'status': 'successful',
-                'url': request.get_host() + '/static/sized_images/' + model.sized_image,
+                'url': request.get_host() + image_path,
             }
         if task_res.failed():
             logger.warning('task failed')
