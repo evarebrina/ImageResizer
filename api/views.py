@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger('api.view')
 
 
-def rest_resize(request):
+def resize(request):
     try:
         image_url = request.GET.get('image_url', '')
         raw_height = request.GET.get('height', '')
@@ -122,7 +122,7 @@ image/png, not ' + image_request.headers['content-type'])
     }, status=201)
 
 
-def rest_details(request, resize_id):
+def details(request, resize_id):
     try:
         logger.debug('Details requested')
         # may raise exception!!!!!!!!!!!!!!!!!!!!!!!!!!
