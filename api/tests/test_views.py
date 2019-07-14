@@ -56,7 +56,7 @@ class RestResize(TestCase):
             'message': 'Height not specified',
         })
 
-    def test_empty_height(self):
+    def test_empty_width(self):
         request = self.factory.get(
             '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&height=100',
             HTTP_HOST='31.134.134.147:8000')
