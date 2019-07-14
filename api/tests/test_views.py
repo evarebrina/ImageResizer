@@ -45,7 +45,7 @@ class RestResize(TestCase):
 
     def test_empty_height(self):
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=100',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -57,7 +57,7 @@ class RestResize(TestCase):
 
     def test_empty_height(self):
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&height=100',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&height=100',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -69,7 +69,7 @@ class RestResize(TestCase):
 
     def test_height_is_not_an_int(self):
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=100&height=ggg',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100&height=ggg',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -81,7 +81,7 @@ class RestResize(TestCase):
 
     def test_width_is_not_an_int(self):
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=ggg&height=100',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=ggg&height=100',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -93,7 +93,7 @@ class RestResize(TestCase):
 
     def test_width_is_out_of_bounds(self):
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=10000&height=100',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=10000&height=100',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -103,7 +103,7 @@ class RestResize(TestCase):
             'message': 'Width is less than 1 or greater than 9999',
         })
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=0&height=100',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=0&height=100',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -115,7 +115,7 @@ class RestResize(TestCase):
 
     def test_height_is_out_of_bounds(self):
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=100&height=10000',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100&height=10000',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
@@ -125,7 +125,7 @@ class RestResize(TestCase):
             'message': 'Height is less than 1 or greater than 9999',
         })
         request = self.factory.get(
-            '/?image_url=http://31.134.134.147:8000/static/sized_images/sized_dd01ce84-2eba-428d-8593-088eb0cf3774.jpg&width=100&height=0',
+            '/?image_url=https://habrastorage.org/storage2/7ce/65f/f9d/7ce65ff9daf3512829763b91cb41ef37.jpg&width=100&height=0',
             HTTP_HOST='31.134.134.147:8000')
         response = rest_resize(request)
         self.assertEqual(response.status_code, 400)
