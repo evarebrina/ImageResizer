@@ -1,5 +1,5 @@
 from django.test import TestCase, RequestFactory
-from .views import rest_resize
+from api.views import rest_resize
 import json
 from api.tasks import handle_image
 from api import models
