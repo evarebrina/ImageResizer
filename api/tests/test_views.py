@@ -198,7 +198,6 @@ class RestDetails(TestCase):
         self.task.wait()
         os.remove(self.test_original_image_path)
         os.rmdir(self.test_path)
-        print('removing ' + self.test_sized_image_path)
         os.remove(self.test_sized_image_path)
 
     def test_good(self):
