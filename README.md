@@ -63,7 +63,7 @@ of setting the task.
 
   Service contains user interface which uses the service API and runs on '/'
   
-  ###Running the project
+### Running the project
   
   You need python3 for this project. To run run the following commands:
 ```
