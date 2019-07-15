@@ -63,9 +63,9 @@ of setting the task.
 
   Service contains user interface which uses the service API and runs on '/'
   
-  ###Running the project
+### Running the project
   
-  You need python3 for this project. To run run the following commands:
+  You need python3 for this project. To start the server run these commands:
 ```
 virtualenv -p python3 ImageResizer
 cd ImageResizer
@@ -76,3 +76,8 @@ pip install -r requirements.txt
 python3 manage.py runserver
 ```
 These will run Django server with the ImageResizer project
+
+To start Celery worker and Celery beat run these commands:
+```
+celery -A ImageResizer worker --beat -c 4 -l info
+```
